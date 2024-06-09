@@ -8,21 +8,17 @@ Etat *createEtat(int id, bool estInit, bool estTerm)
     etat->id = id;
     etat->estInit = estInit;
     etat->estTerm = estTerm;
-    etat->transitions = NULL;
+    etat->transitions = (EnsEtat **)malloc(26 * sizeof(EnsEtat *)); // Initialiser les transitions
+    for (int i = 0; i < 26; i++)
+    {
+        etat->transitions[i] = createEnsEtat(2);
+    }
     etat->numTransitions = 0;
     return etat;
 }
 
 void ajouteTransition(Etat *etat, char c, Etat *succ)
 {
-    if (etat->numTransitions == 0)
-    {
-        etat->transitions = (EnsEtat **)malloc(26 * sizeof(EnsEtat *));
-        for (int i = 0; i < 26; i++)
-        {
-            etat->transitions[i] = createEnsEtat(2);
-        }
-    }
     addEtatToEns(etat->transitions[c - 'a'], succ);
 }
 
@@ -77,7 +73,7 @@ bool ajouteEtatRecursif(Automate *automate, Etat *etat)
 {
     if (!ajouteEtatSeul(automate, etat))
         return false;
-    for (int i = 0; i < etat->numTransitions; i++)
+    for (int i = 0; i < 26; i++)
     {
         EnsEtat *ens = etat->transitions[i];
         for (int j = 0; j < ens->size; j++)
@@ -93,7 +89,7 @@ bool estDeterministe(Automate *automate)
     for (int i = 0; i < automate->etats->size; i++)
     {
         Etat *etat = automate->etats->etats[i];
-        for (int j = 0; j < etat->numTransitions; j++)
+        for (int j = 0; j < 26; j++)
         {
             EnsEtat *ens = etat->transitions[j];
             if (ens->size > 1)
@@ -102,6 +98,35 @@ bool estDeterministe(Automate *automate)
     }
     return true;
 }
+
+void printAutomate(Automate *automate)
+{
+    printf("Automate:\n");
+    printf("--------\n");
+
+    printf("Etats:\n");
+    for (int i = 0; i < automate->etats->size; i++)
+    {
+        Etat *etat = automate->etats->etats[i];
+        printf("Etat %d - Initial: %s - Terminal: %s\n", etat->id, etat->estInit ? "Oui" : "Non", etat->estTerm ? "Oui" : "Non");
+        printf("Transitions:\n");
+        for (int j = 0; j < 26; j++)
+        {
+            EnsEtat *transitions = etat->transitions[j];
+            if (transitions->size > 0)
+            {
+                printf("\t%c -> ", 'a' + j);
+                for (int k = 0; k < transitions->size; k++)
+                {
+                    printf("%d ", transitions->etats[k]->id);
+                }
+                printf("\n");
+            }
+        }
+        printf("\n");
+    }
+}
+
 // ---------------------------------- 1er approche ---------------------------------------------------------------
 
 Automata Initialise(int numstates, int numtransitions, int* finalstates, int startid){
