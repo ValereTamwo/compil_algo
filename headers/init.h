@@ -24,7 +24,7 @@ typedef struct EnsEtat
     Etat **etats;
     int size;
     int capacity;
-} EnsEtat; 
+} EnsEtat;  
 
 typedef struct Automate
 {

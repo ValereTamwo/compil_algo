@@ -16,3 +16,12 @@ Nous definissons d'abord la structure de donnee relative a un automate \
 
  - Initialiser un automate
  - Verifier si une chaine est reconnu par l'automate construire
+
+
+ ## Compilation (Commandes)
+
+ - gcc -o main main.c source/init.c -I headers 
+
+ si tu veux inclure d'autres fichiers ".c" tu mets un espacement et tu renseigne sont chemin 
+
+ - ./main.
